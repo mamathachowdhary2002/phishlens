@@ -1,13 +1,49 @@
-import sqlite3, os, uuid
-DB=os.getenv("CASE_DB","/data/phishlens.db")
+import sqlite3
+import os
+import uuid
+
+DB = os.getenv("CASE_DB", "/tmp/phishlens.db")
+
+
 def init():
-    os.makedirs(os.path.dirname(DB),exist_ok=True)
+    directory = os.path.dirname(DB)
+
+    if directory:
+        os.makedirs(directory, exist_ok=True)
+
     with sqlite3.connect(DB) as c:
-        c.execute("create table if not exists cases(id text primary key, title text, notes text, created text default current_timestamp)")
-def save_case(title,notes):
-    cid=str(uuid.uuid4())[:8].upper()
-    with sqlite3.connect(DB) as c: c.execute("insert into cases(id,title,notes) values(?,?,?)",(cid,title,notes))
+        c.execute("""
+            CREATE TABLE IF NOT EXISTS cases (
+                id TEXT PRIMARY KEY,
+                title TEXT,
+                notes TEXT,
+                created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+
+
+def save_case(title, notes):
+    cid = str(uuid.uuid4())[:8].upper()
+
+    with sqlite3.connect(DB) as c:
+        c.execute(
+            "INSERT INTO cases(id, title, notes) VALUES (?, ?, ?)",
+            (cid, title, notes)
+        )
+
     return cid
+
+
 def list_cases():
     with sqlite3.connect(DB) as c:
-        return [{"id":r[0],"title":r[1],"notes":r[2],"created":r[3]} for r in c.execute("select id,title,notes,created from cases order by created desc")]
+        return [
+            {
+                "id": r[0],
+                "title": r[1],
+                "notes": r[2],
+                "created": r[3]
+            }
+            for r in c.execute(
+                "SELECT id, title, notes, created FROM cases ORDER BY created DESC"
+            )
+        ]
