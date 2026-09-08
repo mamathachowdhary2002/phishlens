@@ -1,0 +1,27 @@
+services:
+  backend:
+    build: ./backend
+    container_name: phishlens-backend
+    restart: unless-stopped
+    environment:
+      VT_API_KEY: ${VT_API_KEY:-}
+      URLSCAN_API_KEY: ${URLSCAN_API_KEY:-}
+      ENABLE_VT: ${ENABLE_VT:-false}
+      ENABLE_ACTIVE_URL_SCAN: ${ENABLE_ACTIVE_URL_SCAN:-false}
+      CASE_DB: /data/phishlens.db
+    volumes:
+      - phishlens_data:/data
+    expose:
+      - "5000"
+
+  frontend:
+    build: ./frontend
+    container_name: phishlens-frontend
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+volumes:
+  phishlens_data:

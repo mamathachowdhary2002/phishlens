@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PhishLens — Security Email Investigation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+  <div class="brand"><span class="brandmark">P</span><div><b>PHISHLENS</b><small>EMAIL THREAT INVESTIGATION</small></div></div>
+  <div class="top-actions"><span class="status"><i></i> Engine online</span><button id="modeBtn" class="ghost">Analyst view</button></div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="eyebrow">SECURITY ANALYST TOOLKIT / v2.0</div>
+  <h1>Investigate suspicious email.<br><em>See the evidence.</em></h1>
+  <p>Upload an <b>.eml</b> file and PhishLens correlates headers, authentication, content, URLs, domains, attachments, IOCs and analyst findings.</p>
+  <div class="hero-chips"><span>Header forensics</span><span>URL intelligence</span><span>IOC extraction</span><span>Explainable risk</span></div>
+</section>
+
+<section class="upload-card" id="dropZone">
+  <div class="upload-icon">↑</div>
+  <h2>Drop an email investigation here</h2>
+  <p>or choose an .eml file from your computer</p>
+  <input id="fileInput" type="file" accept=".eml,message/rfc822" hidden>
+  <button id="chooseBtn" class="primary">Choose .eml file</button>
+  <div id="fileName" class="selected-file">No file selected</div>
+  <button id="analyzeBtn" class="analyze" disabled>Analyze email <span>→</span></button>
+  <small>Max file size: 10 MB · Files are processed by your PhishLens backend</small>
+</section>
+
+<div id="loading" class="loading hidden"><div class="spinner"></div><div><b>Running investigation...</b><span>Parsing headers → correlating evidence → scoring risk</span></div></div>
+<div id="error" class="error hidden"></div>
+
+<section id="results" class="results hidden">
+  <div class="result-head">
+    <div><div class="eyebrow">INVESTIGATION RESULT</div><h2 id="resultTitle">Email analysis</h2><span id="resultSubject"></span></div>
+    <div class="result-actions"><button id="saveCase" class="ghost">＋ Save case</button><button id="reportBtn" class="primary small">Export report</button></div>
+  </div>
+
+  <div class="risk-grid">
+    <div class="risk-card"><div class="risk-ring" id="riskRing"><strong id="riskScore">0</strong><span>/100</span></div><div><div class="label">OVERALL RISK</div><h3 id="riskLabel">LOW</h3><p id="summary"></p></div></div>
+    <div class="metric"><span>URLs</span><b id="urlCount">0</b><small>extracted</small></div>
+    <div class="metric"><span>IOCs</span><b id="iocCount">0</b><small>correlated</small></div>
+    <div class="metric"><span>Findings</span><b id="findingCount">0</b><small>evidence items</small></div>
+  </div>
+
+  <div class="section-title"><span>01</span> Analyst overview</div>
+  <div class="grid2">
+    <article class="panel"><div class="panel-head"><h3>Evidence summary</h3><button class="textbtn" id="findingsBtn">View all →</button></div><div id="findingPreview"></div></article>
+    <article class="panel"><div class="panel-head"><h3>Authentication</h3><span class="micro">SPF / DKIM / DMARC</span></div><div id="authGrid" class="auth-grid"></div><div id="authNote" class="note"></div></article>
+  </div>
+
+  <div class="section-title"><span>02</span> Email forensics</div>
+  <div class="grid2">
+    <article class="panel"><div class="panel-head"><h3>Message identity</h3><button class="textbtn" id="headerBtn">Header forensics →</button></div><div id="emailMeta" class="meta"></div></article>
+    <article class="panel"><div class="panel-head"><h3>Investigation timeline</h3><button class="textbtn" id="timelineBtn">Open timeline →</button></div><div id="timelineMini" class="timeline-mini"></div></article>
+  </div>
+
+  <div class="section-title"><span>03</span> URL intelligence <small>deep details stay inside the investigation modal</small></div>
+  <div id="urlList" class="url-list"></div>
+
+  <div class="section-title"><span>04</span> Indicators of compromise</div>
+  <div class="ioc-strip" id="iocStrip"></div>
+
+  <div class="grid2">
+    <article class="panel"><div class="panel-head"><h3>Attachments</h3><button class="textbtn" id="attBtn">Attachment intelligence →</button></div><div id="attPreview"></div></article>
+    <article class="panel"><div class="panel-head"><h3>MITRE ATT&CK mapping</h3><button class="textbtn" id="mitreBtn">View mappings →</button></div><div id="mitrePreview"></div></article>
+  </div>
+
+  <div class="section-title"><span>05</span> Analyst workspace</div>
+  <article class="panel notes-panel"><div><h3>Investigation notes</h3><p>Add your hypothesis, containment action or escalation decision.</p></div><textarea id="notes" placeholder="Example: Sender domain appears legitimate, but Reply-To and action URL diverge..."></textarea></article>
+</section>
+</main>
+<footer><b>PHISHLENS</b><span>Defensive email analysis · Built for security workflows</span><span>v2.0</span></footer>
+</div>
+
+<div id="modal" class="modal hidden"><div class="modal-backdrop"></div><div class="modal-card"><div class="modal-head"><div><div class="eyebrow" id="modalEyebrow">INVESTIGATION</div><h2 id="modalTitle">Details</h2></div><button id="closeModal" class="close">×</button></div><div id="modalBody" class="modal-body"></div></div></div>
+<script src="script.js"></script>
+</body></html>
