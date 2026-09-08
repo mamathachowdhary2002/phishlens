@@ -23,6 +23,14 @@ from report import make_pdf
 app=Flask(__name__); CORS(app); app.config["MAX_CONTENT_LENGTH"]=10*1024*1024
 init()
 
+@app.get("/")
+def home():
+    return jsonify({
+        "service": "PhishLens Backend",
+        "status": "online",
+        "version": "2.0"
+    })
+
 @app.get("/api/health")
 def health(): return jsonify({"status":"healthy","version":"2.0"})
 
